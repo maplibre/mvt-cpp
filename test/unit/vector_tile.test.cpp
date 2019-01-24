@@ -128,3 +128,13 @@ TEST_CASE( "Prevent underflow in case of LineTo with 0 command count" ) {
         REQUIRE(!geom.empty());
     }
 }
+
+TEST_CASE( "Handle layer with duplicate keys" ) {
+    std::string buffer = open_tile("test/test047.mvt");
+    mapbox::vector_tile::buffer tile(buffer);
+    auto const layer = tile.getLayer("hello");
+    auto const feature = mapbox::vector_tile::feature(layer.getFeature(0),layer);
+    auto opt_val = feature.getValue("type"); \
+    REQUIRE(opt_val.is<std::string>()); \
+    REQUIRE(opt_val.get<std::string>() == "lake"); \
+}
