@@ -1,9 +1,0 @@
-test/
-Makefile
-mason_packages
-build
-.travis.yml
-.npmignore
-.mason
-.gitmodules
-demo
