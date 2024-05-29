@@ -8,6 +8,8 @@ C++14 library for decoding [Mapbox Vector Tiles](https://www.mapbox.com/vector-t
 
 This is a dependency of [MapLibre Native](https://github.com/maplibre/maplibre-native).
 
+Forked from [`mapbox/vector-tile`](https://github.com/mapbox/vector-tile).
+
 ## Depends
 
  - C++14 compiler
