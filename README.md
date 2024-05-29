@@ -1,8 +1,10 @@
+[![MapLibre Logo](https://maplibre.org/img/maplibre-logo-big.svg)](https://maplibre.org/)
+
 ## Vector Tile Library
 
-C++14 library for decoding [Mapbox Vector Tiles](https://www.mapbox.com/vector-tiles/).
+[![](https://img.shields.io/badge/Slack-%23maplibre--native-2EB67D?logo=slack)](https://slack.openstreetmap.us/)
 
-[![Build Status](https://travis-ci.org/mapbox/vector-tile.svg?branch=master)](https://travis-ci.org/mapbox/vector-tile)
+C++14 library for decoding [Mapbox Vector Tiles](https://www.mapbox.com/vector-tiles/).
 
 ## Depends
 
