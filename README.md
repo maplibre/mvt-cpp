@@ -53,6 +53,6 @@ make
 
 These are the applications targeted to upgrade to this library:
 
-* [Mapbox GL Native](https://github.com/mapbox/mapbox-gl-native)
+* [MapLibre Native](https://github.com/maplibre/maplibre-native)
 * [Mapnik Vector Tile](https://github.com/mapbox/mapnik-vector-tile)
 * [Tippecanoe](https://github.com/mapbox/tippecanoe)
