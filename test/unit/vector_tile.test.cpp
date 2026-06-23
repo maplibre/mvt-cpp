@@ -138,3 +138,27 @@ TEST_CASE( "Handle layer with duplicate keys" ) {
     REQUIRE(opt_val.is<std::string>()); \
     REQUIRE(opt_val.get<std::string>() == "lake"); \
 }
+
+TEST_CASE( "Layer without explicit extent field uses Mapbox Vector spec default of 4096" ) {
+    // Minimal valid Mapbox Vector v2 tile with one point feature, deliberately omitting
+    // the optional `extent` field.  The Mapbox Vector v2 spec defines extent as optional
+    // with a default value of 4096; parsing must succeed and return that default.
+    //
+    // Encoded layout (protobuf wire format):
+    //   tile { layer { name:"test" feature { type:POINT geometry:[MoveTo(0,0)] } version:2 } }
+    // Note: no extent field — field 5 is intentionally absent.
+    std::string buffer{
+        '\x1a', '\x11',                                  // tile: layers[0]
+        '\x0a', '\x04', 't', 'e', 's', 't',              //   name = "test"
+        '\x12', '\x07',                                  //   features[0]
+            '\x18', '\x01',                              //     type = POINT
+            '\x22', '\x03', '\x09', '\x00', '\x00',      //     geometry: MoveTo(0,0)
+        '\x78', '\x02'                                   //   version = 2
+    };
+    mapbox::vector_tile::buffer tile(buffer);
+    auto const layer_names = tile.layerNames();
+    REQUIRE(layer_names.size() == 1);
+    auto const layer = tile.getLayer("test");
+    REQUIRE(layer.getExtent() == 4096);
+    REQUIRE(layer.featureCount() == 1);
+}

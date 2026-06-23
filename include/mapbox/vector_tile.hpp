@@ -373,7 +373,6 @@ inline layer::layer(protozero::data_view const& layer_view) :
     features()
 {
     bool has_name = false;
-    bool has_extent = false;
     bool has_version = false;
     protozero::pbf_reader layer_pbf(layer_view);
     while (layer_pbf.next()) {
@@ -405,7 +404,6 @@ inline layer::layer(protozero::data_view const& layer_view) :
         case LayerType::EXTENT:
             {
                 extent = layer_pbf.get_uint32();
-                has_extent = true;
             }
             break;
         case LayerType::VERSION:
@@ -421,13 +419,10 @@ inline layer::layer(protozero::data_view const& layer_view) :
             break;
         }
     }
-    if (!has_version || !has_name || !has_extent) {
+    if (!has_version || !has_name) {
         std::string msg("missing required field:");
         if (!has_version) {
             msg += " version ";
-        }
-        if (!has_extent) {
-            msg += " extent ";
         }
         if (!has_name) {
             msg += " name";
