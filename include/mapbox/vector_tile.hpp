@@ -5,6 +5,7 @@
 #include <mapbox/feature.hpp>
 #include <protozero/pbf_reader.hpp>
 
+#include <algorithm>
 #include <cmath>
 #include <cstdint>
 #include <map>
@@ -287,22 +288,18 @@ GeometryCollectionType feature::getGeometries(float scale) const {
 
             x += protozero::decode_zigzag32(static_cast<std::uint32_t>(*start_itr++));
             y += protozero::decode_zigzag32(static_cast<std::uint32_t>(*start_itr++));
-            float px = ::roundf(static_cast<float>(x) * scale);
-            float py = ::roundf(static_cast<float>(y) * scale);
             static const float max_coord = static_cast<float>(std::numeric_limits<typename GeometryCollectionType::coordinate_type>::max());
             static const float min_coord = static_cast<float>(std::numeric_limits<typename GeometryCollectionType::coordinate_type>::min());
 
-            if (px > max_coord ||
-                px < min_coord ||
-                py > max_coord ||
-                py < min_coord
-                ) {
-                throw std::runtime_error("paths outside valid range of coordinate_type");
-            } else {
-                paths.back().emplace_back(
-                    static_cast<typename GeometryCollectionType::coordinate_type>(px),
-                    static_cast<typename GeometryCollectionType::coordinate_type>(py));
-            }
+            // The spec allows geometry to extend beyond the tile extent, so a valid tile can hold
+            // coordinates outside the range of coordinate_type. Clamp them, as MapLibre GL JS does,
+            // instead of dropping the whole feature.
+            float px = std::min(std::max(::roundf(static_cast<float>(x) * scale), min_coord), max_coord);
+            float py = std::min(std::max(::roundf(static_cast<float>(y) * scale), min_coord), max_coord);
+
+            paths.back().emplace_back(
+                static_cast<typename GeometryCollectionType::coordinate_type>(px),
+                static_cast<typename GeometryCollectionType::coordinate_type>(py));
         } else if (cmd == CommandType::CLOSE) {
             if (!paths.back().empty()) {
                 paths.back().push_back(paths.back()[0]);
